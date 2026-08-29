@@ -2,13 +2,19 @@
 MODULE_DIR := $(abspath .)
 TOOLS_DIR ?= $(abspath ../tools)
 BUF := $(TOOLS_DIR)/buf
-PROTOC ?= $(TOOLS_DIR)/protoc
+PROTOC ?= $(or $(shell command -v protoc 2>/dev/null),$(TOOLS_DIR)/protoc)
 DEPENDENCY_DOCKER_TARGETS :=
 include dependency-proxy.generated.mk
 
-.PHONY: all gen-proto fmt-proto
+.PHONY: all build test gen-proto fmt-proto
 
 all: gen-proto
+
+build: all ## [host] Compile every package in this module
+	@go test -run '^$$' ./...
+
+test: all ## [host] Run this module's tests
+	@go test ./...
 
 gen-proto:
 	@find . -type f -name 'go.generated.proto.mk' | while read mkfile; do \
