@@ -1,6 +1,6 @@
 module github.com/gorundebug/inventory_service_api
 
-go 1.25
+go 1.26
 
 require (
 	google.golang.org/grpc v1.81.1
